@@ -1,0 +1,7 @@
+/vendor/
+/var/cache/
+.DS_Store
+/dev/*.json
+/dev/*.svg
+/dev/*.html
+/layer.json
