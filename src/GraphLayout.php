@@ -145,6 +145,54 @@ final class GraphLayout
         );
     }
 
+    public static function xLandscapePanel(): self
+    {
+        return new self(
+            name: 'x-landscape-panel',
+            width: 500,
+            height: 300,
+            marginLeft: 52,
+            marginRight: 18,
+            marginTop: 16,
+            marginBottom: 42,
+            fontSize: 15,
+            curveStrokeWidth: 2.8,
+            axisStrokeWidth: 1.5,
+            gridStrokeWidth: 1.2,
+            yTickCount: 4,
+            xTickLength: 5,
+            yTickLength: 5,
+            xLabelOffset: 17,
+            yLabelGap: 5,
+            xLabelGap: 8.0,
+            labelWidthFactor: 0.62,
+        );
+    }
+
+    public static function xPortraitPanel(): self
+    {
+        return new self(
+            name: 'x-portrait-panel',
+            width: 740,
+            height: 400,
+            marginLeft: 52,
+            marginRight: 18,
+            marginTop: 18,
+            marginBottom: 46,
+            fontSize: 15,
+            curveStrokeWidth: 3.0,
+            axisStrokeWidth: 1.5,
+            gridStrokeWidth: 1.2,
+            yTickCount: 5,
+            xTickLength: 6,
+            yTickLength: 5,
+            xLabelOffset: 18,
+            yLabelGap: 5,
+            xLabelGap: 8.0,
+            labelWidthFactor: 0.62,
+        );
+    }
+
     public static function twoByTwo(): self
     {
         return self::quadrant();
