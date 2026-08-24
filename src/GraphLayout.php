@@ -193,6 +193,30 @@ final class GraphLayout
         );
     }
 
+    public static function fullPanel(): self
+    {
+        return new self(
+            name: 'full-panel',
+            width: 390,
+            height: 150,
+            marginLeft: 42,
+            marginRight: 12,
+            marginTop: 8,
+            marginBottom: 28,
+            fontSize: 12,
+            curveStrokeWidth: 2.2,
+            axisStrokeWidth: 1.2,
+            gridStrokeWidth: 1.0,
+            yTickCount: 3,
+            xTickLength: 4,
+            yTickLength: 4,
+            xLabelOffset: 13,
+            yLabelGap: 4,
+            xLabelGap: 7.0,
+            labelWidthFactor: 0.62,
+        );
+    }
+
     public static function twoByTwo(): self
     {
         return self::quadrant();

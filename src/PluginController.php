@@ -286,7 +286,7 @@ final class PluginController
                 $this->svgDataUri(
                     $this->renderGraph(
                         points: $points,
-                        layout: GraphLayout::quadrant(),
+                        layout: GraphLayout::fullPanel(),
                         timezone: $configuration->timezone,
                         firstTimestamp: $firstTimestamp,
                         lastTimestamp: $lastTimestamp
