@@ -13,13 +13,12 @@ final class PluginController
     public function __construct(
         private readonly MeasurementProvider $measurementProvider,
         private readonly PollutantRegistry $pollutants =
-            new PollutantRegistry(),
+        new PollutantRegistry(),
         private readonly GraphDataGenerator $graphDataGenerator =
-            new GraphDataGenerator(),
+        new GraphDataGenerator(),
         private readonly SvgGraphRenderer $svgRenderer =
-            new SvgGraphRenderer()
-    ) {
-    }
+        new SvgGraphRenderer()
+    ) {}
 
     /**
      * @return array<string, mixed>
@@ -58,8 +57,8 @@ final class PluginController
          * ArcGIS request can feed every graph in the dashboard.
          */
         $pollutantIds = array_map(
-            static fn (Pollutant $pollutant): string =>
-                $pollutant->id,
+            static fn(Pollutant $pollutant): string =>
+            $pollutant->id,
             array_values(
                 $this->pollutants->all()
             )
@@ -130,7 +129,7 @@ final class PluginController
             throw new RuntimeException(
                 sprintf(
                     'Not enough measurements for pollutant %s '
-                    . 'in the requested graph window.',
+                        . 'in the requested graph window.',
                     $primaryPollutant->label
                 )
             );
@@ -152,9 +151,7 @@ final class PluginController
             $graphEnd->getTimestamp();
 
         $primaryPoints =
-            $available[
-                $primaryPollutant->key
-            ]['points'];
+            $available[$primaryPollutant->key]['points'];
 
         /*
          * Keep the old single-pollutant output intact.
@@ -202,6 +199,16 @@ final class PluginController
             )
         );
 
+        $imageQuadrantX = $this->svgDataUri(
+            $this->renderGraph(
+                points: $primaryPoints,
+                layout: GraphLayout::quadrantX(),
+                timezone: $configuration->timezone,
+                firstTimestamp: $firstTimestamp,
+                lastTimestamp: $lastTimestamp
+            )
+        );
+
         $title = $this->pollutantTitle(
             $stationName,
             $primaryPollutant
@@ -212,48 +219,51 @@ final class PluginController
 
         $payload = [
             'title' =>
-                $title,
+            $title,
 
             'station' =>
-                $stationName,
+            $stationName,
 
             'station_id' =>
-                $configuration->stationId,
+            $configuration->stationId,
 
             'pollutant' =>
-                $primaryPollutant->key,
+            $primaryPollutant->key,
 
             'pollutant_id' =>
-                $primaryPollutant->id,
+            $primaryPollutant->id,
 
             'hours' =>
-                $configuration->hours,
+            $configuration->hours,
 
             'last_measurement' =>
-                $lastMeasurement?->start->format(
-                    DATE_ATOM
-                ),
+            $lastMeasurement?->start->format(
+                DATE_ATOM
+            ),
 
             'available_pollutant_count' =>
-                count($available),
+            count($available),
 
             /*
              * Existing single-graph API.
              */
             'image' =>
-                $imageFull,
+            $imageFull,
 
             'image_full' =>
-                $imageFull,
+            $imageFull,
 
             'image_half_horizontal' =>
-                $imageHalfHorizontal,
+            $imageHalfHorizontal,
 
             'image_half_vertical' =>
-                $imageHalfVertical,
+            $imageHalfVertical,
 
             'image_quadrant' =>
-                $imageQuadrant,
+            $imageQuadrant,
+
+            'image_quadrant_x' =>
+            $imageQuadrantX,
         ];
 
         /*
@@ -314,9 +324,7 @@ final class PluginController
          * 2. first other available pollutant in registry order
          */
         $pairEntries = [
-            $available[
-                $primaryPollutant->key
-            ],
+            $available[$primaryPollutant->key],
         ];
 
         foreach ($available as $key => $entry) {
@@ -367,11 +375,33 @@ final class PluginController
             /*
              * Dedicated large portrait resource for TRMNL X.
              */
+            $payload[$prefix . '_image_x'] =
+                $this->svgDataUri(
+                    $this->renderGraph(
+                        points: $points,
+                        layout: GraphLayout::halfHorizontalX(),
+                        timezone: $configuration->timezone,
+                        firstTimestamp: $firstTimestamp,
+                        lastTimestamp: $lastTimestamp
+                    )
+                );
+
             $payload[$prefix . '_image_x_portrait'] =
                 $this->svgDataUri(
                     $this->renderGraph(
                         points: $points,
                         layout: GraphLayout::xPortraitPanel(),
+                        timezone: $configuration->timezone,
+                        firstTimestamp: $firstTimestamp,
+                        lastTimestamp: $lastTimestamp
+                    )
+                );
+
+            $payload[$prefix . '_image_x_half_vertical'] =
+                $this->svgDataUri(
+                    $this->renderGraph(
+                        points: $points,
+                        layout: GraphLayout::halfVerticalX(),
                         timezone: $configuration->timezone,
                         firstTimestamp: $firstTimestamp,
                         lastTimestamp: $lastTimestamp

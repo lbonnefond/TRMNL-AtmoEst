@@ -91,6 +91,30 @@ final class GraphLayout
         );
     }
 
+    public static function halfHorizontalX(): self
+    {
+        return new self(
+            name: 'half-horizontal-x',
+            width: 1000,
+            height: 300,
+            marginLeft: 58,
+            marginRight: 20,
+            marginTop: 15,
+            marginBottom: 47,
+            fontSize: 16,
+            curveStrokeWidth: 3.1,
+            axisStrokeWidth: 1.7,
+            gridStrokeWidth: 1.4,
+            yTickCount: 3,
+            xTickLength: 6,
+            yTickLength: 5,
+            xLabelOffset: 20,
+            yLabelGap: 5,
+            xLabelGap: 8.5,
+            labelWidthFactor: 0.62,
+        );
+    }
+
     /**
      * Narrow and tall Mashup region.
      */
@@ -118,6 +142,30 @@ final class GraphLayout
         );
     }
 
+    public static function halfVerticalX(): self
+    {
+        return new self(
+            name: 'half-vertical-x',
+            width: 500,
+            height: 680,
+            marginLeft: 56,
+            marginRight: 18,
+            marginTop: 28,
+            marginBottom: 62,
+            fontSize: 17,
+            curveStrokeWidth: 3.0,
+            axisStrokeWidth: 1.6,
+            gridStrokeWidth: 1.3,
+            yTickCount: 5,
+            xTickLength: 6,
+            yTickLength: 5,
+            xLabelOffset: 20,
+            yLabelGap: 5,
+            xLabelGap: 8.0,
+            labelWidthFactor: 0.62,
+        );
+    }
+
     /**
      * One quadrant of a 2 × 2 Mashup.
      */
@@ -141,6 +189,30 @@ final class GraphLayout
             xLabelOffset: 15,
             yLabelGap: 3,
             xLabelGap: 6.0,
+            labelWidthFactor: 0.62,
+        );
+    }
+
+    public static function quadrantX(): self
+    {
+        return new self(
+            name: 'quadrant-x',
+            width: 500,
+            height: 340,
+            marginLeft: 56,
+            marginRight: 18,
+            marginTop: 18,
+            marginBottom: 48,
+            fontSize: 16,
+            curveStrokeWidth: 3.0,
+            axisStrokeWidth: 1.6,
+            gridStrokeWidth: 1.3,
+            yTickCount: 3,
+            xTickLength: 6,
+            yTickLength: 5,
+            xLabelOffset: 20,
+            yLabelGap: 5,
+            xLabelGap: 8.0,
             labelWidthFactor: 0.62,
         );
     }
