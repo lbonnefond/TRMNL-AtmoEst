@@ -11,10 +11,10 @@ use RuntimeException;
 final class AtmoGrandEstClient
 {
     private const MEASUREMENTS_URL =
-        'https://www.atmo-grandest.eu/dataviz/dataviz/mesures';
+    'https://www.atmo-grandest.eu/dataviz/dataviz/mesures';
 
     private const STATIONS_URL =
-        'https://services3.arcgis.com/Is0UwT37raQYl9Jj/ArcGIS/rest/services/'
+    'https://services3.arcgis.com/Is0UwT37raQYl9Jj/ArcGIS/rest/services/'
         . 'mes_Grand_Est_horaire_poll_princ/FeatureServer/0/query';
 
     /**
@@ -57,6 +57,8 @@ final class AtmoGrandEstClient
 
         $measurements = [];
 
+        $stationName = $this->stationName($stationId);
+
         foreach ($pollutantIds as $pollutantId) {
             $url = sprintf(
                 '%s/%s/%s/%s/%s',
@@ -73,6 +75,7 @@ final class AtmoGrandEstClient
                 $this->extractMeasurements(
                     $response,
                     $stationId,
+                    $stationName,
                     $pollutantId
                 ) as $measurement
             ) {
@@ -111,29 +114,29 @@ final class AtmoGrandEstClient
     {
         $response = $this->requestJson(
             self::STATIONS_URL
-            . '?'
-            . http_build_query(
-                [
-                    'where' => '1=1',
-                    'outFields' => implode(',', [
-                        'code_station_ue',
-                        'nom_station',
-                        'nom_com',
-                        'nom_dept',
-                        'typologie',
-                        'influence',
-                        'id_poll_ue',
-                    ]),
-                    'returnGeometry' => 'false',
-                    'returnDistinctValues' => 'true',
-                    'orderByFields' =>
+                . '?'
+                . http_build_query(
+                    [
+                        'where' => '1=1',
+                        'outFields' => implode(',', [
+                            'code_station_ue',
+                            'nom_station',
+                            'nom_com',
+                            'nom_dept',
+                            'typologie',
+                            'influence',
+                            'id_poll_ue',
+                        ]),
+                        'returnGeometry' => 'false',
+                        'returnDistinctValues' => 'true',
+                        'orderByFields' =>
                         'nom_com,nom_station,id_poll_ue',
-                    'f' => 'json',
-                ],
-                '',
-                '&',
-                PHP_QUERY_RFC3986
-            )
+                        'f' => 'json',
+                    ],
+                    '',
+                    '&',
+                    PHP_QUERY_RFC3986
+                )
         );
 
         $features = $response['features'] ?? [];
@@ -179,25 +182,25 @@ final class AtmoGrandEstClient
                 $stations[$stationId] = [
                     'id' => $stationId,
                     'name' =>
-                        (string) (
-                            $attributes['nom_station'] ?? ''
-                        ),
+                    (string) (
+                        $attributes['nom_station'] ?? ''
+                    ),
                     'city' =>
-                        (string) (
-                            $attributes['nom_com'] ?? ''
-                        ),
+                    (string) (
+                        $attributes['nom_com'] ?? ''
+                    ),
                     'department' =>
-                        (string) (
-                            $attributes['nom_dept'] ?? ''
-                        ),
+                    (string) (
+                        $attributes['nom_dept'] ?? ''
+                    ),
                     'typology' =>
-                        (string) (
-                            $attributes['typologie'] ?? ''
-                        ),
+                    (string) (
+                        $attributes['typologie'] ?? ''
+                    ),
                     'influence' =>
-                        (string) (
-                            $attributes['influence'] ?? ''
-                        ),
+                    (string) (
+                        $attributes['influence'] ?? ''
+                    ),
                     'pollutantIds' => [],
                 ];
             }
@@ -299,7 +302,7 @@ final class AtmoGrandEstClient
 
             throw new RuntimeException(
                 'Atmo Grand Est request failed: '
-                . $error
+                    . $error
             );
         }
 
@@ -331,6 +334,50 @@ final class AtmoGrandEstClient
         return $data;
     }
 
+    private function stationName(
+        string $stationId
+    ): string {
+        $response = $this->requestJson(
+            self::STATIONS_URL
+                . '?'
+                . http_build_query(
+                    [
+                        'where' =>
+                        "code_station_ue='"
+                            . str_replace("'", "''", $stationId)
+                            . "'",
+                        'outFields' => 'nom_station',
+                        'returnGeometry' => 'false',
+                        'resultRecordCount' => '1',
+                        'f' => 'json',
+                    ],
+                    '',
+                    '&',
+                    PHP_QUERY_RFC3986
+                )
+        );
+
+        $features = $response['features'] ?? [];
+
+        if (
+            !is_array($features)
+            || $features === []
+            || !is_array($features[0] ?? null)
+        ) {
+            return $stationId;
+        }
+
+        $attributes = $features[0]['attributes'] ?? [];
+
+        if (!is_array($attributes)) {
+            return $stationId;
+        }
+
+        $name = (string) ($attributes['nom_station'] ?? '');
+
+        return $name !== '' ? $name : $stationId;
+    }
+
     /**
      * Convert the current Atmo dataviz response into Measurement
      * objects.
@@ -353,6 +400,7 @@ final class AtmoGrandEstClient
     private function extractMeasurements(
         array $response,
         string $stationId,
+        string $stationName,
         string $pollutantId
     ): array {
         $result = [];
@@ -403,12 +451,12 @@ final class AtmoGrandEstClient
                     ($row['legendValidation'] ?? '')
                     === 'non validée'
                 )
-                    ? 1
-                    : 0;
+                ? 1
+                : 0;
 
             $result[] = new Measurement(
                 stationId: $stationId,
-                stationName: '',
+                stationName: $stationName,
                 pollutantId: $pollutantId,
                 pollutantName: '',
                 start: $start,
