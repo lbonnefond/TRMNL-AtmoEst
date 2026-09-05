@@ -95,12 +95,12 @@ final class GraphLayout
     {
         return new self(
             name: 'half-horizontal-x',
-            width: 1000,
-            height: 300,
-            marginLeft: 58,
-            marginRight: 20,
+            width: 390,
+            height: 205,
+            marginLeft: 30,
+            marginRight: 30,
             marginTop: 15,
-            marginBottom: 47,
+            marginBottom: 40,
             fontSize: 16,
             curveStrokeWidth: 3.1,
             axisStrokeWidth: 1.7,
@@ -146,10 +146,10 @@ final class GraphLayout
     {
         return new self(
             name: 'half-vertical-x',
-            width: 500,
-            height: 680,
-            marginLeft: 56,
-            marginRight: 18,
+            width: 800,
+            height: 205,
+            marginLeft: 30,
+            marginRight: 30,
             marginTop: 28,
             marginBottom: 62,
             fontSize: 17,
